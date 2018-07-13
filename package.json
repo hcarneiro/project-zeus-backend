@@ -1,0 +1,21 @@
+{
+  "name": "project-zeus-backend",
+  "version": "1.0.0",
+  "description": "Project Zeus API",
+  "author": "Hugo Carneiro <hello@thegeekdeveloper.com>",
+  "main": "app.js",
+  "scripts": {
+    "start": "npm start",
+    "heroku-postbuild": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hcarneiro/project-zeus-backend.git"
+  },
+  "dependencies": {
+    "express": "^4.16.3"
+  },
+  "engines": {
+    "node": "8.11.3"
+  }
+}
