@@ -12,7 +12,6 @@ const pool = new Pool({
 
 express()
   .use(express.static(path.join(__dirname, 'public')))
-  .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
   .get('/cool', (req, res) => res.send(cool()))
   .get('/', (req, res) => res.send('Hello World\n'))
@@ -28,7 +27,7 @@ express()
     try {
       const client = await pool.connect()
       const result = await client.query('SELECT * FROM test_table');
-      res.render('pages/db', result);
+      res.send(result);
       client.release();
     } catch (err) {
       console.error(err);
