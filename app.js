@@ -2,7 +2,7 @@ const cool = require('cool-ascii-faces')
 const express = require('express')
 const path = require('path')
 const PORT = process.env.PORT || 5000
-const HOSTNAME = process.env.HOSTNAME || 'localhost'
+const HOSTNAME = process.env.HOST || 'localhost'
 
 const { Pool } = require('pg');
 const pool = new Pool({
