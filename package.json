@@ -5,6 +5,7 @@
   "author": "Hugo Carneiro <hello@thegeekdeveloper.com>",
   "main": "app.js",
   "scripts": {
+    "dev": "heroku local web",
     "start": "npm start",
     "heroku-postbuild": "npm run build"
   },
