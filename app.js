@@ -9,8 +9,9 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: false
 });
+const app = express()
 
-express()
+app
   .use(express.static(path.join(__dirname, 'public')))
   .set('view engine', 'ejs')
   .get('/cool', (req, res) => res.send(cool()))
