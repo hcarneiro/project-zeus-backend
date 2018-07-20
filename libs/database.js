@@ -3,9 +3,7 @@ const env = (process.env.NODE_ENV || 'local').toLowerCase();
 const envConfig = require(`../config/${env}.json`);
 const DATABASE_URL = process.env.DATABASE_URL || envConfig.database_url;
 
-const database = {};
-
-const db = new Sequelize(DATABASE_URL, {
+const database = new Sequelize(DATABASE_URL, {
   dialect: 'postgres',
   dialectOptions: {
     ssl: process.env.DATABASE_URL ? true : false
@@ -17,4 +15,4 @@ const db = new Sequelize(DATABASE_URL, {
   }
 });
 
-module.exports = db;
+module.exports = database;
