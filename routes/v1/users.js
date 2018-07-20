@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
     const notFound = {
       message: `No users found`
     };
-    res.send(notFound);
+    res.status(404).send(notFound)
   }
 });
 
@@ -24,7 +24,7 @@ router.get('/:id', async (req, res) => {
     const notFound = {
       message: `No user found with ID ${req.params.id}`
     };
-    res.send(notFound);
+    res.status(404).send(notFound)
   }
 });
 
