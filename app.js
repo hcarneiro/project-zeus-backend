@@ -23,4 +23,4 @@ app.use(cors());
 app.use('/', require('./routes/index'));
 app.use('/v1/users', require('./routes/v1/users'));
 
-app.listen(PORT, HOSTNAME, () => console.log(`Listening on http://${HOSTNAME}:${PORT}`));
+module.exports = app;
