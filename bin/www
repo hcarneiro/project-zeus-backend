@@ -1,0 +1,11 @@
+#!/usr/bin/env node
+
+const workers = process.env.WEB_CONCURRENCY;
+
+// When options are not given, express-cluster will figure it out
+// automatically based on the number of CPU cores on the machine
+const options = workers ? { count: workers, verbose: true } : undefined;
+
+require('express-cluster')(function (worker) {
+  return require('../server').start();
+}, options);
