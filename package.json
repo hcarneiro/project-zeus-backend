@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "heroku local web",
     "start": "npm start",
+    "nodemon": "./node_modules/nodemon/bin/nodemon.js --delay 1 -L --exec npm start",
     "heroku-postbuild": "npm run build"
   },
   "repository": {
@@ -19,6 +20,7 @@
     "ejs": "^2.6.1",
     "express": "^4.16.3",
     "helmet": "^3.12.1",
+    "nodemon": "^1.18.3",
     "pg": "^7.4.3",
     "pg-hstore": "^2.3.2",
     "pug": "^2.0.3",
