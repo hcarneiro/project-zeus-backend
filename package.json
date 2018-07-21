@@ -5,9 +5,9 @@
   "author": "Hugo Carneiro <hello@thegeekdeveloper.com>",
   "main": "app.js",
   "scripts": {
-    "dev": "heroku local web",
-    "start": "npm start",
-    "nodemon": "./node_modules/nodemon/bin/nodemon.js --delay 1 -L --exec npm start",
+    "dev": "heroku local dev",
+    "start": "node ./bin/www",
+    "nodemon": "./node_modules/nodemon/bin/nodemon.js --delay 1 -L --exec npm run start",
     "heroku-postbuild": "npm run build"
   },
   "repository": {
@@ -19,6 +19,7 @@
     "cors": "^2.8.4",
     "ejs": "^2.6.1",
     "express": "^4.16.3",
+    "express-cluster": "0.0.5",
     "helmet": "^3.12.1",
     "nodemon": "^1.18.3",
     "pg": "^7.4.3",
