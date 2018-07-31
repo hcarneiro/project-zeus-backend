@@ -6,7 +6,7 @@
   ],
   "verbose": true,
   "watch": [
-    "app.js", "server.js", "routes", "models", "libs", "config"
+    "app.js", "server.js", "routes", "models", "views", "libs", "config"
   ],
   "ext": "js json"
 }
