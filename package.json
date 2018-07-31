@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Project Zeus API",
   "author": "Hugo Carneiro <hello@thegeekdeveloper.com>",
-  "main": "app.js",
   "scripts": {
     "dev": "heroku local dev",
     "start": "node ./bin/www",
@@ -25,7 +24,8 @@
     "pg": "^7.4.3",
     "pg-hstore": "^2.3.2",
     "pug": "^2.0.3",
-    "sequelize": "^4.38.0"
+    "sequelize": "^4.38.0",
+    "socket.io": "^2.1.1"
   },
   "engines": {
     "node": "8.11.3"
