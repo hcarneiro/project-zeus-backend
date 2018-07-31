@@ -4,12 +4,11 @@ const config = require('../libs/config');
 const appPackage = require('../package');
 
 router.get('/', function getSystemInfo(req, res) {
-  res.render('test');
-  // res.send({
-  //   status: 'ok',
-  //   environment: config.env,
-  //   version: appPackage.version
-  // });
+  res.send({
+    status: 'ok',
+    environment: config.env,
+    version: appPackage.version
+  });
 });
 
 module.exports = router;
