@@ -7,6 +7,8 @@ const HOSTNAME = process.env.HOST || 'localhost';
 const config = require('./libs/config');
 const app = express();
 
+require('./models/index');
+
 app.use(helmet({
   frameguard: false,
   hidePoweredBy: { setTo: 'McDonald\'s' }
@@ -22,5 +24,7 @@ app.use(cors());
 /* ROUTES */
 app.use('/', require('./routes/index'));
 app.use('/v1/users', require('./routes/v1/users'));
+app.use('/v1/projects', require('./routes/v1/projects'));
+app.use('/v1/tasks', require('./routes/v1/tasks'));
 
 module.exports = app;
