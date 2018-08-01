@@ -43,7 +43,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.get('/:id/tasks', async (req, res) => {
+router.get('/:id/tasks', (req, res) => {
   return Projects.findById(req.params.id)
     .then((project) => {
       return project.getTasks({

@@ -2,6 +2,16 @@ const express = require('express');
 const router = express.Router();
 const Tasks = require('../../models/tasks');
 
+router.post('/', (req, res) => {
+  Tasks.create(req.body)
+    .then((task) => {
+      res.send(task);
+    })
+    .catch((error) => {
+      res.status(500).send(error)
+    });
+});
+
 router.get('/', async (req, res) => {
   const tasks = await Tasks.findAll({
     order: [
