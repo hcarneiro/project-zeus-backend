@@ -12,6 +12,10 @@ server.start = function () {
   io.on('connection', function(socket) {
     console.log('Client connected');
 
+    socket.on('NEW TASK', function(data) {
+      io.emit('TASK', data);
+    });
+
     socket.on('disconnect', function() {
       console.log('Client disconnected');
     });
