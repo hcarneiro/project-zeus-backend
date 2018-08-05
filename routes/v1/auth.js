@@ -13,9 +13,6 @@ const Organization = require('../../models/organization');
 const database = require('../../libs/database');
 const router = express.Router();
 
-const databases = [ database ];
-
-
 router.post('/login', function (req, res) {
   req.passport = passports.get('zeusLogin');
 
@@ -50,29 +47,31 @@ router.post('/login', function (req, res) {
     });
   }
 
-  async.each(databases, function findUser(db, next) {
-    return User.findOne({
-      attributes: ['id', 'password', 'email', 'auth_token', 'userRoleId', 'createdAt'],
-      where: { email: email.toLowerCase() },
-      include: [{
-        model: Organization,
-        attributes: ['id', 'name', 'isSuspended']
-      }]
-    }).then(function (dbUser) {
-      const isValidPassword = dbUser && dbUser.isValidPassword(password);
-      const isValidPasswordToken = dbUser && password && passport && dbUser.auth_token && password === dbUser.auth_token;
+  return User.findOne({
+    attributes: ['id', 'password', 'email', 'auth_token', 'userRoleId', 'createdAt'],
+    where: { email: email.toLowerCase() },
+    include: [{
+      model: Organization,
+      attributes: ['id', 'name', 'isSuspended']
+    }]
+  }).then(function (dbUser) {
+    const isValidPassword = dbUser && dbUser.isValidPassword(password);
+    const isValidPasswordToken = dbUser && password && passport && dbUser.auth_token && password === dbUser.auth_token;
 
-      if (isValidPassword || isValidPasswordToken) {
-        user = dbUser;
+    if (isValidPassword || isValidPasswordToken) {
+      user = dbUser;
 
-        if (isValidPasswordToken) {
-          deviceIsTrusted = true;
-        }
+      if (isValidPasswordToken) {
+        deviceIsTrusted = true;
       }
+    }
 
-      next();
-    }, next);
+    proceed();
   }, function (err) {
+    proceed(err);
+  });
+
+  function proceed(err) {
     if (err || !user) {
       errorMessage = errorMessage || 'Email/password combination does not match';
 
@@ -182,7 +181,7 @@ router.post('/login', function (req, res) {
 
       res.send(data);
     });
-  });
+  };
 });
 
 router.post('/logout', function onLogout(req, res) {
