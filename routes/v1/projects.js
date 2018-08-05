@@ -10,7 +10,10 @@ router.get('/', async (req, res) => {
   console.log(req.user.id)
   const projects = await req.user.getProjects({
     include: [{
-      model: Task
+      model: Task,
+      where: {
+        userId: req.user.id
+      }
     }],
     order: [
       ['createdAt', 'DESC']
