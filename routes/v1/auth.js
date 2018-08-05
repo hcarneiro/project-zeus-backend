@@ -185,4 +185,15 @@ router.post('/login', function (req, res) {
   });
 });
 
+router.post('/logout', function onLogout(req, res) {
+  if (req.session) {
+    req.session.destroy();
+  }
+
+  // Unset auth token from the cookies
+  cookie.set(res, '');
+
+  res.send();
+});
+
 module.exports = router;
