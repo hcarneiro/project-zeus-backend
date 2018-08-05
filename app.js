@@ -28,5 +28,6 @@ app.use('/', require('./routes/index'));
 app.use('/v1/users', require('./routes/v1/users'));
 app.use('/v1/projects', require('./routes/v1/projects'));
 app.use('/v1/tasks', require('./routes/v1/tasks'));
+app.use('/v1/auth', require('./routes/v1/auth'));
 
 module.exports = app;
