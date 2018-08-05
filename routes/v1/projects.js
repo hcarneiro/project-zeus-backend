@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const Projects = require('../../models/projects');
-const Tasks = require('../../models/tasks');
+const Project = require('../../models/project');
+const Task = require('../../models/task');
 
 router.get('/', async (req, res) => {
-  const projects = await Projects.findAll({
+  const projects = await Project.findAll({
     include: [{
-      model: Tasks
+      model: Task
     }],
     order: [
       ['createdAt', 'DESC']
@@ -24,12 +24,12 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
-  const project = await Projects.findOne({
+  const project = await Project.findOne({
     where: {
       id: req.params.id
     },
     include: [{
-      model: Tasks
+      model: Task
     }]
   });
 
@@ -44,9 +44,9 @@ router.get('/:id', async (req, res) => {
 });
 
 router.get('/:id/tasks', (req, res) => {
-  return Projects.findById(req.params.id)
+  return Project.findById(req.params.id)
     .then((project) => {
-      return project.getTasks({
+      return project.getTask({
         order: [
           ['createdAt', 'DESC']
         ]

@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const Tasks = require('../../models/tasks');
+const Task = require('../../models/task');
 
 router.post('/', (req, res) => {
-  Tasks.create(req.body)
+  Task.create(req.body)
     .then((task) => {
       res.send(task);
     })
@@ -13,7 +13,7 @@ router.post('/', (req, res) => {
 });
 
 router.get('/', async (req, res) => {
-  const tasks = await Tasks.findAll({
+  const tasks = await Task.findAll({
     order: [
       ['createdAt', 'DESC']
     ]
@@ -30,7 +30,7 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
-  const task = await Tasks.findById(req.params.id);
+  const task = await Task.findById(req.params.id);
 
   if (task) {
     res.send(task);

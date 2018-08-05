@@ -1,22 +1,20 @@
 const express = require('express');
 const router = express.Router();
-const Users = require('../../models/users');
+const User = require('../../models/user');
 
 router.get('/', async (req, res) => {
-  const users = await Users.findAll();
+  const user = {}
 
-  if (users) {
-    res.send(users);
-  } else {
-    const notFound = {
-      message: `No users found`
-    };
-    res.status(404).send(notFound)
-  }
+  user.auth_token = req.auth_token;
+
+  res.send({
+    user,
+    session: req.session
+  });
 });
 
 router.get('/:id', async (req, res) => {
-  const user = await Users.findById(req.params.id);
+  const user = await User.findById(req.params.id);
 
   if (user) {
     res.send(user);
