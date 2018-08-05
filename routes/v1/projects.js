@@ -2,8 +2,10 @@ const express = require('express');
 const router = express.Router();
 const Project = require('../../models/project');
 const Task = require('../../models/task');
+const User = require('../../models/user');
 
 router.get('/', async (req, res) => {
+  console.log(req)
   const projects = await Project.findAll({
     include: [{
       model: Task
