@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const database = require('../libs/database');
 
-const Tasks = database.define('tasks', {
+const Task = database.define('task', {
   title: {
     type: Sequelize.STRING
   },
@@ -19,4 +19,4 @@ const Tasks = database.define('tasks', {
   paranoid: true
 });
 
-module.exports = Tasks;
+module.exports = Task;

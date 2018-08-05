@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const database = require('../libs/database');
 
-const Projects = database.define('projects', {
+const Project = database.define('project', {
   name: {
     type: Sequelize.STRING
   },
@@ -19,4 +19,4 @@ const Projects = database.define('projects', {
   paranoid: true
 });
 
-module.exports = Projects;
+module.exports = Project;
