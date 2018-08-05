@@ -6,8 +6,6 @@ const TaskUser = require('../../models/taskUser');
 const User = require('../../models/user');
 
 router.get('/', async (req, res) => {
-  console.log(req)
-  console.log(req.user.id)
   const projects = await req.user.getProjects({
     include: [{
       model: Task,
@@ -19,12 +17,6 @@ router.get('/', async (req, res) => {
       ['createdAt', 'DESC']
     ]
   });
-  const tasks = await req.user.getTasks({
-    order: [
-      ['createdAt', 'DESC']
-    ]
-  });
-  console.log(tasks)
 
   if (projects) {
     res.send(projects);
