@@ -3,7 +3,7 @@ const router = express.Router();
 const Task = require('../../models/task');
 
 router.post('/', (req, res) => {
-  Task.create(req.body)
+  req.user.createTask(req.body)
     .then((task) => {
       res.send(task);
     })
