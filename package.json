@@ -31,6 +31,7 @@
     "pg": "^7.4.3",
     "pg-hstore": "^2.3.2",
     "pug": "^2.0.3",
+    "sendgrid": "^5.2.3",
     "sequelize": "^4.38.0",
     "socket.io": "^2.1.1",
     "useragent": "^2.3.0"
