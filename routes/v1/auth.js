@@ -358,70 +358,56 @@ router.post('/forgot', function forgotPassword(req, res) {
     return res.status(400).send({ message: 'Email is required' });
   }
 
-  function searchUser(next) {
-    return database.models.user.findOne({
-      attributes: ['id', 'firstName', 'lastName'],
-      where: { email: userEmail.toLowerCase() }
-    })
-      .then(function onGetUser(dbUser) {
-        if (!dbUser) {
-          return res.status(400).send({
-            message: 'Email does not exist'
-          });
-        }
+  return database.models.user.findOne({
+    attributes: ['id', 'firstName', 'lastName'],
+    where: { email: userEmail.toLowerCase() }
+  })
+    .then(function onGetUser(dbUser) {
+      if (!dbUser) {
+        return res.status(400).send({
+          message: 'Email does not exist'
+        });
+      }
 
-        user = dbUser;
+      user = dbUser;
 
-        const global_merge_vars = [
-          { name: 'first_name', content: user.firstName || '' }
-        ];
-        let token;
-        if (req.query.method === 'code') {
-          token = casual.array_of_digits(6).join('');
-          global_merge_vars.push({
-            name: 'code',
-            content: token
-          });
-        } else {
-          const hash = md5(casual.unix_time + user.id);
-          token = `${hash}-${casual.unix_time}`;
-          const resetUrl = `${config.client_host}reset-password/${token}`;
-          global_merge_vars.push({
-            name: 'reset_url',
-            content: resetUrl
-          });
-        }
-        const emailData = {
-          template_name: 'password-reset',
-          message: {
-            subject: 'Fliplet account - Reset password',
-            to: [{
-              email: userEmail,
-              name: user.fullName,
-              type: 'to'
-            }],
-            global_merge_vars,
-            tags: [
-              'password-resets'
-            ],
-            merge: true,
-            merge_language: 'handlebars'
+      let token;
+      let resetUrl;
+      if (req.query.method === 'code') {
+        token = casual.array_of_digits(6).join('');
+      } else {
+        const hash = md5(casual.unix_time + user.id);
+        token = `${hash}-${casual.unix_time}`;
+        resetUrl = `${config.client_host}reset-password/${token}`;
+      }
+      const emailData = {
+        template_id: 'd-cd251bd2abf7492f80de3b29a19b47c0',
+        message: {
+          to: {
+            email: userEmail,
+            name: user.fullName
+          },
+          dynamicData: {
+            firstName: user.firstName || '',
+            token: token,
+            resetUrl: resetUrl,
+            subject: 'Reset account password'
           }
-        };
+        }
+      };
 
-        user.resetPasswordToken = token;
-        user.resetPasswordTokenExpires = Date.now() + 60 * 60 * 1000;
-        user.save();
+      user.resetPasswordToken = token;
+      user.resetPasswordTokenExpires = Date.now() + 60 * 60 * 1000;
+      user.save();
 
-        return email.sendTemplate(emailData)
-          .then(function onEmailSendError(response) {
-            return res.send();
-          })
-          .catch(function onEmailSendError(error) {
-            return res.status(400).send();
-          });
-      });
-  }
+      return email.sendTemplate(emailData)
+        .then(function onEmailSendError(response) {
+          return res.send();
+        })
+        .catch(function onEmailSendError(error) {
+          return res.status(400).send();
+        });
+    });
 });
 
 router.get('/reset/:token', function getToken(req, res) {
@@ -452,14 +438,14 @@ router.post('/reset/:token', function resetPassword(req, res) {
 
   const newPassword = crypt(password);
   return database.models.user.findOne({
-    attributes: ['id', 'legacyId'],
+    attributes: ['id'],
     where: {
       resetPasswordToken: req.params.token,
       resetPasswordTokenExpires: { $gt: new Date(Date.now()) }
     }
   })
   .then((results) => {
-    const user = _.first(_.compact(results));
+    const user = results;
     if (!user) {
       return res.status(400).send({
         message: 'Invalid or expired token'
