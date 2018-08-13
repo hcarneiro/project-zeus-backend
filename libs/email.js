@@ -1,5 +1,7 @@
 const config = require('./config');
-const sendgrid = require('sendgrid')(process.env.SENDGRID_API_KEY);
+const sendgrid = require('@sendgrid/mail');
+sendgrid.setApiKey(process.env.SENDGRID_API_KEY || config.SENDGRID_API_KEY);
+sendgrid.setSubstitutionWrappers('{{', '}}');
 
 const email = {
   sendTemplate(options) {
@@ -8,16 +10,28 @@ const email = {
       return Promise.reject('Missing required option');
     }
 
-    const templateOptions = new sendgrid.Email({
-      to: options.message.to.email,
-      from: 'support@hugocarneiro.me',
-      subject: options.message.subject,
-      html: '<p></p>',
-      substitutions: options.message.substitutions
-    });
-
-    templateOptions.addFilter('templates', 'enable', 1);
-    templateOptions.addFilter('templates', 'template_id', options.template_id);
+    const templateOptions = {
+      from: {
+        email: 'support@hugocarneiro.me',
+        name: 'Project Zeus'
+      },
+      reply_to: {
+        email: 'support@hugocarneiro.me',
+        name: 'Project Zeus'
+      },
+      personalizations: [
+        {
+          to: [
+            {
+              email: options.message.to.email,
+              name: options.message.to.name
+            }
+          ],
+          dynamic_template_data: options.message.dynamicData
+        }
+      ],
+      template_id: options.template_id
+    };
 
     return new Promise(function (resolve, reject) {
       sendgrid.send(templateOptions, resolve, reject);

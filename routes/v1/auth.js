@@ -228,18 +228,17 @@ router.post('/signup', function signupUser(req, res) {
   function sendEmail() {
     const verificationUrl = `${config.client_host}verify/${token}`;
     const emailData = {
-      template_id: 'd-0d1cee0cbc5444a3b1bc572e9665447a',
+      template_id: 'd-5cf8026d927a419d88a63ed646850325',
       message: {
-        subject: 'Welcome! Confirm Your Email',
-        to: [{
+        to: {
           email: req.body.email,
-          name: user.fullName,
-          type: 'to'
-        }],
-        substitutions: {
-          'first_name': user.firstName || '',
-          'organization_name': req.body.organizationName || '',
-          'verification_url': verificationUrl
+          name: user.fullName
+        },
+        dynamicData: {
+          firstName: user.firstName || '',
+          organizationName: req.body.organizationName || '',
+          verificationUrl: verificationUrl,
+          subject: 'Welcome! Confirm Your Email'
         }
       }
     };
@@ -280,7 +279,7 @@ router.post('/signup', function signupUser(req, res) {
     });
   }).catch(function (error) {
     res.status(400);
-    debugger;
+
     if (Array.isArray(error.errors) && error.errors.length && error.errors[0].path === 'email') {
       database.models.user.findAll({ where: { email: req.body.email } })
         .then(function (users) {
@@ -326,7 +325,7 @@ router.post('/signup', function signupUser(req, res) {
 
 router.post('/verify/:token', function verifyUser(req, res) {
   database.models.user.findOne({
-    attributes: ['id', 'firstName', 'lastName', 'email', 'auth_token', 'legacyId', 'userRoleId'],
+    attributes: ['id', 'firstName', 'lastName', 'email', 'auth_token', 'userRoleId'],
     where: {
       verificationToken: req.params.token,
       verificationTokenExpires: { $gt: new Date(Date.now()) }
