@@ -51,7 +51,7 @@ router.post('/login', function (req, res) {
   }
 
   return User.findOne({
-    attributes: ['id', 'password', 'email', 'auth_token', 'userRoleId', 'createdAt'],
+    attributes: ['id', 'password', 'email', 'auth_token', 'userRoleId', 'preferences', 'createdAt', 'userBio', 'userCity', 'userCountry'],
     where: { email: email.toLowerCase() },
     include: [{
       model: Organization,
@@ -139,8 +139,7 @@ router.post('/login', function (req, res) {
         req.user = user;
         passports.createSessionIfNeeded(req, res)
           .then(function () {
-            // This flag is used to store the login under flipletLogin passport
-            // Used for example on fliplet-widget-login-fliplet
+            // This flag is used to store the login under zeusLogin
             if (passport) {
               req.passport = passports.get('zeusLogin');
               return passports.storeDetails(req, { email: user.email, auth_token: user.auth_token, userRoleId: user.userRoleId }).then(function () {
@@ -170,6 +169,7 @@ router.post('/login', function (req, res) {
       cookie.set(res, authToken, cookieOptions);
 
       const data = _.pick(user, ['id', 'email', 'auth_token', 'userRoleId', 'createdAt']);
+      data.host = config.host;
       data.trusted = !!deviceIsTrusted;
       data.organization = _.pick(user.organizations, 'id', 'name');
 
@@ -200,6 +200,14 @@ router.post('/logout', function onLogout(req, res) {
 
 router.post('/signup', function signupUser(req, res) {
   req.checkBody(userSignupSchema);
+
+  req.db = database;
+
+  if (!req.db) {
+    return res.status(400).send({
+      message: `There seems to be a connection problem, please try again later.`
+    });
+  }
 
   const errors = req.validationErrors();
   if (errors) {
@@ -256,10 +264,9 @@ router.post('/signup', function signupUser(req, res) {
         }
       });
   }
-  debugger;
+
   user.save().then(function () {
     return database.models.organization.create(organizationData).then(function (organization) {
-      debugger;
       return organization.addUser(user, {
         through: {
           organizationRoleId: 1 // role is admin by default
@@ -311,7 +318,7 @@ router.post('/signup', function signupUser(req, res) {
                 user: _.pick(user.get({ plain: true }), [
                   'id', 'firstName', 'lastName', 'fullName', 'email'
                 ]),
-                organization: _.pick(organizations[0].get({ plain: true }), [
+                organization: _.pick(organizations.get({ plain: true }), [
                   'id', 'name'
                 ])
               });
@@ -321,7 +328,7 @@ router.post('/signup', function signupUser(req, res) {
         });
     } else {
       res.send({
-        message: 'We couldn\'t create your account. Please contact us at support@fliplet.com to get more assistance.'
+        message: 'We couldn\'t create your account. Please contact us at support@colabora.io to get more assistance.'
       });
     }
   });
@@ -377,13 +384,10 @@ router.post('/forgot', function forgotPassword(req, res) {
 
       let token;
       let resetUrl;
-      if (req.query.method === 'code') {
-        token = casual.array_of_digits(6).join('');
-      } else {
-        const hash = md5(casual.unix_time + user.id);
-        token = `${hash}-${casual.unix_time}`;
-        resetUrl = `${config.client_host}reset-password/${token}`;
-      }
+      const hash = md5(casual.unix_time + user.id);
+      token = `${hash}-${casual.unix_time}`;
+      resetUrl = `${config.client_host}reset-password/${token}`;
+      
       const emailData = {
         template_id: 'd-cd251bd2abf7492f80de3b29a19b47c0',
         message: {

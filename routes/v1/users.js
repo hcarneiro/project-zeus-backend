@@ -1,15 +1,16 @@
 const express = require('express');
 const router = express.Router();
+const config = require('../../libs/config')
 const User = require('../../models/user');
 
 router.get('/', async (req, res) => {
-  const user = {}
-
+  const user = req.user || {};
   user.auth_token = req.auth_token;
 
   res.send({
     user,
-    session: req.session
+    session: req.session,
+    host: config.host
   });
 });
 

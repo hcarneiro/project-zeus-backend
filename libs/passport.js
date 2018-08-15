@@ -2,7 +2,7 @@ const _ = require('lodash');
 const zeusLogin = require('./passports/login');
 const cookie = require('./cookie');
 const config = require('./config');
-const Session = require('../models/session');
+const database = require('./database');
 
 const passports = {
   zeusLogin
@@ -114,14 +114,14 @@ module.exports.createSession = function (req, userId) {
     server: {
       passports: {}
     },
-    fingerprint: Session.generateFingerprint(req)
+    fingerprint: database.models.session.generateFingerprint(req)
   };
 
   if (req.session) {
     data.server.previousSessionId = req.session.id;
   }
 
-  const session = Session.build(data);
+  const session = database.models.session.build(data);
 
   session.setIdentifier(req);
 
