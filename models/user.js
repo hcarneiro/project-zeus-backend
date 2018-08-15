@@ -85,7 +85,7 @@ const User = database.define('user', {
 });
 
 User.prototype.generateAuthToken = function() {
-  // Generates something like "eu--c763d6786d53e0e6fb772823e737b2d8-657-290-0938"
+  // Generates something like "c763d6786d53e0e6fb772823e737b2d8-657-290-0938"
   this.auth_token = `${md5(this.id)}-${casual.phone}`;
   return this.save();
 };

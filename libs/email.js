@@ -12,12 +12,12 @@ const email = {
 
     const templateOptions = {
       from: {
-        email: 'support@hugocarneiro.me',
-        name: 'Project Zeus'
+        email: 'support@colabora.io',
+        name: 'Colabora Support'
       },
       reply_to: {
-        email: 'support@hugocarneiro.me',
-        name: 'Project Zeus'
+        email: 'support@colabora.io',
+        name: 'Colabora Support'
       },
       personalizations: [
         {

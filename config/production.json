@@ -1,8 +1,8 @@
 {
-  "host": "http://api.hugocarneiro.me/",
+  "host": "http://api.colabora.io/",
   "port": 80,
   "interface": "0.0.0.0",
-  "client_host": "http://hugocarneiro.me/",
+  "client_host": "http://colabora.io/",
   "password_salt": "$1b$15$LR3B/1X4aYrQdz8wMrpG9",
   "query_logging": true
 }
