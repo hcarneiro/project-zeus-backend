@@ -53,6 +53,15 @@ const User = database.define('user', {
     type: Sequelize.DATE,
     allowNull: true
   },
+  userBio: {
+    type: Sequelize.TEXT
+  },
+  userCity: {
+    type: Sequelize.STRING
+  },
+  userCountry: {
+    type: Sequelize.STRING
+  },
   preferences: {
     type: Sequelize.JSONB,
     allowNull: true,

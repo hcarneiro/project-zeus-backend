@@ -171,7 +171,7 @@ router.post('/login', function (req, res) {
 
       const data = _.pick(user, ['id', 'email', 'auth_token', 'userRoleId', 'createdAt']);
       data.trusted = !!deviceIsTrusted;
-      data.organization = _.pick(_.first(user.organizations), 'id', 'name');
+      data.organization = _.pick(user.organizations, 'id', 'name');
 
       if (req.session) {
         data.session = req.session;
@@ -214,6 +214,7 @@ router.post('/signup', function signupUser(req, res) {
   ]));
 
   user.setPassword(req.body.password);
+  user.setUserRole(2);
   const hash = md5(casual.unix_time + user.id);
   const token = `${hash}-${casual.unix_time}`;
   user.verificationToken = token;
@@ -255,11 +256,14 @@ router.post('/signup', function signupUser(req, res) {
         }
       });
   }
-
+  debugger;
   user.save().then(function () {
     return database.models.organization.create(organizationData).then(function (organization) {
+      debugger;
       return organization.addUser(user, {
-        organizationRoleId: 1 // role is admin by default
+        through: {
+          organizationRoleId: 1 // role is admin by default
+        }
       }).then(function onCreated() {
         res.status(201).send({
           user: _.pick(user.get({ plain: true }), [

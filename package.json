@@ -1,7 +1,7 @@
 {
-  "name": "project-zeus-backend",
+  "name": "api.colabora.io",
   "version": "1.0.0",
-  "description": "Project Zeus API",
+  "description": "Colabora - Project Management for Teams",
   "author": "Hugo Carneiro <hello@thegeekdeveloper.com>",
   "scripts": {
     "dev": "heroku local dev",

@@ -17,7 +17,7 @@ const Models = {
   UserRole: require('./userRole')
 };
 
-Models.TeamUser.belongsTo(Models.TeamRole, {});
+Models.TeamUser.belongsTo(Models.TeamRole, { foreignKey: 'teamRoleId' });
 Models.Team.belongsToMany(Models.User, { through: Models.TeamUser });
 Models.Team.belongsTo(Models.Organization, {
   foreignKey: {
@@ -25,16 +25,27 @@ Models.Team.belongsTo(Models.Organization, {
   }
 });
 
+Models.User.belongsTo(Models.UserRole, { foreignKey: 'userRoleId' });
+Models.User.belongsToMany(Models.Team, { through: Models.TeamUser });
+Models.User.belongsToMany(Models.Organization, { through: Models.OrganizationUser });
+Models.User.belongsToMany(Models.Project, { through: Models.ProjectUser });
+Models.User.belongsToMany(Models.Task, { through: Models.TaskUser });
+Models.User.hasMany(Models.Session, {
+  onDelete: 'CASCADE'
+});
+Models.User.hasMany(Models.Project);
+Models.User.hasMany(Models.Task);
+
+Models.OrganizationUser.belongsTo(Models.OrganizationRole, { foreignKey: 'organizationRoleId' });
+Models.Organization.belongsToMany(Models.User, { through: Models.OrganizationUser });
+Models.Organization.hasMany(Models.Team);
+
 Models.Task.belongsToMany(Models.User, { through: Models.TaskUser });
 Models.Task.belongsTo(Models.Project);
 
 Models.Project.belongsToMany(Models.User, { through: Models.ProjectUser });
-Models.Project.belongsTo(Models.Team, {});
+Models.Project.belongsTo(Models.Team);
 Models.Project.hasMany(Models.Task);
-
-Models.Organization.belongsToMany(Models.User, { through: Models.OrganizationUser });
-Models.OrganizationUser.belongsTo(Models.OrganizationRole, {});
-Models.Organization.hasMany(Models.Team);
 
 Models.Session.belongsTo(Models.User, {
   foreignKey: {
@@ -43,13 +54,44 @@ Models.Session.belongsTo(Models.User, {
   onDelete: 'cascade'
 });
 
-Models.User.belongsToMany(Models.Team, { through: Models.TeamUser });
-Models.User.belongsToMany(Models.Organization, { through: Models.OrganizationUser });
-Models.User.belongsTo(Models.UserRole);
-Models.User.hasMany(Models.Session, {
-  onDelete: 'CASCADE'
-});
-Models.User.hasMany(Models.Project);
-Models.User.hasMany(Models.Task);
-
 database.sync();
+  // .then(function(){
+  //   console.log('Syncronization complete. Creating organization roles...');
+  //   return database.models.organizationRole.bulkCreate([
+  //     {
+  //       "id": 1,
+  //       "role": "admin"
+  //     },
+  //     {
+  //       "id": 2,
+  //       "role": "standard"
+  //     }
+  //   ]);
+  // }).then(function () {
+  //   console.log('Organization roles created. Creating user roles...');
+  //   return database.models.userRole.bulkCreate([
+  //     {
+  //       "id": 1,
+  //       "role": "admin"
+  //     },
+  //     {
+  //       "id": 2,
+  //       "role": "standard"
+  //     }
+  //   ]);
+  // }).then(function () {
+  //   console.log('User roles created. Creating team roles...');
+  //   return database.models.teamRole.bulkCreate([
+  //     {
+  //       "id": 1,
+  //       "role": "owner"
+  //     },
+  //     {
+  //       "id": 2,
+  //       "role": "standard"
+  //     }
+  //   ]);
+  // }).then(function () {
+  //   console.log('Team roles created. Migration completed.');
+  //   return Promise.resolve();
+  // });
