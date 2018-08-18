@@ -51,7 +51,7 @@ router.post('/login', function (req, res) {
   }
 
   return User.findOne({
-    attributes: ['id', 'password', 'email', 'auth_token', 'userRoleId', 'preferences', 'createdAt', 'userBio', 'userCity', 'userCountry'],
+    attributes: ['id', 'password', 'email', 'auth_token', 'userRoleId', 'preferences', 'createdAt'],
     where: { email: email.toLowerCase() },
     include: [{
       model: Organization,
@@ -171,8 +171,12 @@ router.post('/login', function (req, res) {
       const data = _.pick(user, ['id', 'email', 'auth_token', 'userRoleId', 'createdAt']);
       data.host = config.host;
       data.trusted = !!deviceIsTrusted;
-      data.organization = _.pick(user.organizations, 'id', 'name');
-
+      data.organization = []
+      _.forEach(user.organizations, function(organization) {
+        const singleOrg = _.pick(organization, 'id', 'name');
+        data.organization.push(singleOrg);
+      });
+      
       if (req.session) {
         data.session = req.session;
         data.auth_token = req.session.auth_token;

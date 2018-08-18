@@ -4,7 +4,7 @@ const config = require('../../libs/config')
 const User = require('../../models/user');
 
 router.get('/', async (req, res) => {
-  const user = req.user || {};
+  const user = await req.user.getData();
   user.auth_token = req.auth_token;
 
   res.send({
