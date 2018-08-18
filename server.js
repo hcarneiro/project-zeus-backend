@@ -1,3 +1,4 @@
+require ('newrelic');
 const app = require('./app');
 const http = require('http');
 const socketIO = require('socket.io');
