@@ -1,8 +1,10 @@
 require ('newrelic');
-const app = require('./app');
+
 const http = require('http');
 const socketIO = require('socket.io');
 const config = require('./libs/config');
+
+const app = require('./app');
 
 app.set('port', config.port);
 
