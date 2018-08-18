@@ -62,6 +62,9 @@ const User = database.define('user', {
   userCountry: {
     type: Sequelize.STRING
   },
+  profilePicture: {
+    type: Sequelize.STRING
+  },
   preferences: {
     type: Sequelize.JSONB,
     allowNull: true,

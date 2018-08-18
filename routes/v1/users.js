@@ -4,14 +4,16 @@ const config = require('../../libs/config')
 const User = require('../../models/user');
 
 router.get('/', async (req, res) => {
-  const user = await req.user.getData();
-  user.auth_token = req.auth_token;
+  if (req.user) {
+    const user = await req.user.getData();
+    user.auth_token = req.auth_token;
 
-  res.send({
-    user,
-    session: req.session,
-    host: config.host
-  });
+    res.send({
+      user,
+      session: req.session,
+      host: config.host
+    });
+  }
 });
 
 router.get('/:id', async (req, res) => {
