@@ -1,3 +1,4 @@
+require ('newrelic');
 const express = require('express');
 const expressValidator = require('express-validator');
 const cors = require('cors');

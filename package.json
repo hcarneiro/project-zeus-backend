@@ -28,6 +28,7 @@
     "express-validator": "^5.3.0",
     "helmet": "^3.12.1",
     "md5": "^2.2.1",
+    "newrelic": "^4.8.0",
     "nodemon": "^1.18.3",
     "pg": "^7.4.3",
     "pg-hstore": "^2.3.2",
