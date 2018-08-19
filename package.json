@@ -16,7 +16,11 @@
   "dependencies": {
     "@sendgrid/mail": "^6.3.1",
     "async": "^2.6.1",
+    "aws-sdk": "^2.296.0",
+    "busboy": "^0.2.14",
+    "busboy-body-parser": "^0.3.2",
     "casual": "^1.5.19",
+    "connect-busboy": "0.0.2",
     "cookie-parser": "^1.4.3",
     "cool-ascii-faces": "^1.3.4",
     "cors": "^2.8.4",
