@@ -1,32 +1,36 @@
 const express = require('express');
 const router = express.Router();
 const config = require('../../libs/config');
-const AWS = require('aws-sdk');
+const aws = require('aws-sdk');
 const Busboy = require('busboy');
 const _ = require('lodash');
+var url = require('url');
+var https = require('https');
+var sizeOf = require('image-size');
 
 function uploadToS3(file) {
-  let s3bucket = new AWS.S3({
-    Bucket: config.S3.BUCKET_NAME,
-    accessKeyId: config.AWS.ACCESS_KEY_ID,
-    secretAccessKey: config.AWS.SECRET_ACCESS_KEY,
-    region: config.S3.BUCKET_REGION
+  let bucket = new aws.S3({
+    params: {
+      Bucket: config.S3.BUCKET_NAME,
+      Region: config.S3.BUCKET_REGION
+    }    
   });
 
+  bucket.name = config.S3.BUCKET_NAME;
+
   return new Promise(function(resolve, reject) {
-    return s3bucket.createBucket(function() {
-      const params = {
-        Bucket: config.S3.BUCKET_NAME,
-        Key: file.name,
-        Body: file.data,
-      };
-      
-      s3bucket.upload(params, function (err, data) {
-        if (err) {
-         reject(err)
-        }
-        resolve(data)
-      });
+    const params = {
+      Key: file.name,
+      Body: file.data,
+      ContentType: file.mimetype,
+      ACL: 'public-read'
+    };
+    
+    return bucket.upload(params, function (err, data) {
+      if (err) {
+       reject(err)
+      }
+      resolve(data)
     });
  });
 }
@@ -41,8 +45,17 @@ router.post('/', (req, res, next) => {
 
     uploadToS3(file)
       .then(function(response) {
+        let dimensions;
+        const imageTest = new RegExp('image\/.*');
         const fileData = _.pick(file, ['name', 'mimetype', 'size']);
-        fileData.url = response['Location']
+
+        fileData.url = response['Location'];
+        
+        if (imageTest.test(file.mimetype)) {
+          dimensions = sizeOf(file.data);
+          fileData.dimensions = _.pick(dimensions, ['width', 'height']);
+        }
+        
         res.send(fileData);
       })
       .catch(function(error) {

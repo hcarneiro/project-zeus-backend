@@ -4,6 +4,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
 const cookieParser = require('cookie-parser');
+const aws = require('aws-sdk');
 const busboy = require('connect-busboy');
 const bodyParser = require('body-parser');
 const busboyBodyParser = require('busboy-body-parser');
@@ -20,6 +21,13 @@ app.use(helmet({
   frameguard: false,
   hidePoweredBy: { setTo: 'McDonald\'s' }
 }));
+
+// AWS configuration
+aws.config.update({
+  accessKeyId: config.AWS.ACCESS_KEY_ID,
+  secretAccessKey: config.AWS.SECRET_ACCESS_KEY,
+  region: config.S3.BUCKET_REGION
+});
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
