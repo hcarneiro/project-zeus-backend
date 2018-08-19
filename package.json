@@ -31,6 +31,7 @@
     "express-cluster": "0.0.5",
     "express-validator": "^5.3.0",
     "helmet": "^3.12.1",
+    "image-size": "^0.6.3",
     "md5": "^2.2.1",
     "newrelic": "^4.8.0",
     "nodemon": "^1.18.3",
