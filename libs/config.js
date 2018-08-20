@@ -24,7 +24,6 @@ keys.forEach(function getValue(key) {
 _.merge(config, envConfig);
 config.env = env;
 config.port = parseInt(process.env.PORT || envConfig.port || 80, 10);
-config.cdn_host = envConfig.cdn_host;
 config.domain = envConfig.host.replace(/https?:\/\//, '').replace(/\/$/, '');
 config.secretKey = process.env.SECRET_KEY || envConfig.SECRET_KEY;
 
