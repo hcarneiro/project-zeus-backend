@@ -69,7 +69,8 @@ const User = database.define('user', {
     type: Sequelize.STRING
   },
   userResponsabilities: {
-    type: Sequelize.STRING
+    type: Sequelize.JSONB,
+    defaultValue: []
   },
   preferences: {
     type: Sequelize.JSONB,
