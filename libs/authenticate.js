@@ -3,7 +3,7 @@ const User = require('../models/user');
 const passports = require('./passport');
 const cookie = require('./cookie');
 
-const userAttributes = ['id', 'email', 'auth_token', 'userRoleId', 'type', 'firstName', 'lastName', 'preferences', 'createdAt'];
+const userAttributes = ['id', 'email', 'auth_token', 'userRoleId', 'type', 'firstName', 'lastName', 'preferences', 'userBio', 'userCountry', 'userCity', 'userTitle', 'userResponsabilities', 'profilePicture', 'createdAt'];
 
 function authenticate(req, res, next) {
   loadUser(req, res, function () {
