@@ -3,5 +3,6 @@
   "port": 80,
   "interface": "0.0.0.0",
   "client_host": "http://colabora.io/",
-  "query_logging": true
+  "query_logging": true,
+  "cdn_host": "http://cdn.colabora.io"
 }

@@ -49,7 +49,7 @@ router.post('/', (req, res, next) => {
         const imageTest = new RegExp('image\/.*');
         const fileData = _.pick(file, ['name', 'mimetype', 'size']);
 
-        fileData.url = response['Location'];
+        fileData.url = `${config.cdn_host}/${fileData.name}`;
         
         if (imageTest.test(file.mimetype)) {
           dimensions = sizeOf(file.data);
