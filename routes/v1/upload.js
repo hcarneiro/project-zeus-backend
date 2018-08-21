@@ -35,13 +35,13 @@ function uploadToS3(file) {
  });
 }
 
-router.post('/', (req, res, next) => {
+router.post('/profile', (req, res, next) => {
   let busboy = new Busboy({ headers: req.headers });
   // The file upload has completed
   busboy.on('finish', function() {
     // Your files are stored in req.files. In this case,
     // Grabs your file object from the request.
-    const file = req.files.element2;
+    const file = req.files.photo;
 
     uploadToS3(file)
       .then(function(response) {
