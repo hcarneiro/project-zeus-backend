@@ -3,9 +3,9 @@ const router = express.Router();
 const config = require('../../libs/config')
 const database = require('../../libs/database');
 
-router.get('/', async (req, res) => {
+router.get('/', (req, res) => {
   if (req.user) {
-    const user = await req.user.getData();
+    const user = req.user;
     user.auth_token = req.auth_token;
 
     res.send({
@@ -33,9 +33,10 @@ router.put('/', async (req, res) => {
       'userBio',
       'userCity',
       'userCountry',
-      'userResponsabilities'
+      'userResponsabilities',
+      'profilePicture'
     ].forEach(function (param) {
-      if (req.body[param]) {
+      if (typeof req.body[param] !== 'undefined') {
         req.user[param] = req.body[param];
       }
     });

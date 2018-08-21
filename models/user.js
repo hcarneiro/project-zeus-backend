@@ -151,11 +151,4 @@ User.prototype.isOrgAdmin = function(organizationId) {
     });
 };
 
-User.prototype.getData = function() {
-  const user = this.get({ plain: true });
-  user.isAdmin = user.userRoleId === 1;
-
-  return user;
-}
-
 module.exports = User;
