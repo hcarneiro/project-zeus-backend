@@ -60,6 +60,7 @@ app.use(authenticate.loadUser);
 
 /* ROUTES */
 app.use('/', require('./routes/index'));
+app.use('/v1/organizations', require('./routes/v1/organizations'));
 app.use('/v1/users', require('./routes/v1/users'));
 app.use('/v1/projects', require('./routes/v1/projects'));
 app.use('/v1/tasks', require('./routes/v1/tasks'));
