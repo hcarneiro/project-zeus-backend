@@ -14,9 +14,11 @@ const User = require('../../models/user');
 const Organization = require('../../models/organization');
 const email = require('../../libs/email');
 const database = require('../../libs/database');
+const bruteforce = require('../../libs/bruteforce');
+
 const router = express.Router();
 
-router.post('/login', function (req, res) {
+router.post('/login', bruteforce.prevent, function (req, res) {
   req.passport = passports.get('zeusLogin');
 
   const email = req.body.email;
@@ -205,7 +207,7 @@ router.post('/logout', function onLogout(req, res) {
 router.post('/signup', function signupUser(req, res) {
   req.checkBody(userSignupSchema);
 
-  req.db = database;
+  req.db = database.db;
 
   if (!req.db) {
     return res.status(400).send({
@@ -221,7 +223,7 @@ router.post('/signup', function signupUser(req, res) {
     });
   }
 
-  const user = database.models.user.build(_.pick(req.body, [
+  const user = database.db.models.user.build(_.pick(req.body, [
     'firstName', 'lastName', 'email'
   ]));
 
@@ -270,7 +272,7 @@ router.post('/signup', function signupUser(req, res) {
   }
 
   user.save().then(function () {
-    return database.models.organization.create(organizationData).then(function (organization) {
+    return database.db.models.organization.create(organizationData).then(function (organization) {
       return organization.addUser(user, {
         through: {
           organizationRoleId: 1 // role is admin by default
@@ -296,7 +298,7 @@ router.post('/signup', function signupUser(req, res) {
     res.status(400);
 
     if (Array.isArray(error.errors) && error.errors.length && error.errors[0].path === 'email') {
-      database.models.user.findAll({ where: { email: req.body.email } })
+      database.db.models.user.findAll({ where: { email: req.body.email } })
         .then(function (users) {
           const existingUser = users[0];
 
@@ -339,7 +341,7 @@ router.post('/signup', function signupUser(req, res) {
 });
 
 router.post('/verify/:token', function verifyUser(req, res) {
-  database.models.user.findOne({
+  database.db.models.user.findOne({
     attributes: ['id', 'firstName', 'lastName', 'email', 'auth_token', 'userRoleId'],
     where: {
       verificationToken: req.params.token,
@@ -365,7 +367,7 @@ router.post('/verify/:token', function verifyUser(req, res) {
   });
 });
 
-router.post('/forgot', function forgotPassword(req, res) {
+router.post('/forgot', bruteforce.prevent, function forgotPassword(req, res) {
   const userEmail = req.body.email;
   let user;
 
@@ -373,7 +375,7 @@ router.post('/forgot', function forgotPassword(req, res) {
     return res.status(400).send({ message: 'Email is required' });
   }
 
-  return database.models.user.findOne({
+  return database.db.models.user.findOne({
     attributes: ['id', 'firstName', 'lastName'],
     where: { email: userEmail.toLowerCase() }
   })
@@ -423,7 +425,7 @@ router.post('/forgot', function forgotPassword(req, res) {
 });
 
 router.get('/reset/:token', function getToken(req, res) {
-  return database.models.user.findOne({
+  return database.db.models.user.findOne({
     attributes: ['id'],
     where: {
       resetPasswordToken: req.params.token,
@@ -449,7 +451,7 @@ router.post('/reset/:token', function resetPassword(req, res) {
   }
 
   const newPassword = crypt(password);
-  return database.models.user.findOne({
+  return database.db.models.user.findOne({
     attributes: ['id'],
     where: {
       resetPasswordToken: req.params.token,

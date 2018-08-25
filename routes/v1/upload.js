@@ -8,6 +8,12 @@ var url = require('url');
 var https = require('https');
 var sizeOf = require('image-size');
 
+const preloaders = require('../../libs/preloaders');
+const authenticate = require('../../libs/authenticate');
+
+router.use(authenticate);
+router.use(preloaders.param('organizationId', 'organization'));
+
 function uploadToS3(file) {
   let bucket = new aws.S3({
     params: {

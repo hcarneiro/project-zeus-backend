@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const authenticate = require('../../libs/authenticate');
 const config = require('../../libs/config')
 const database = require('../../libs/database');
+
+router.use(authenticate);
 
 router.get('/', (req, res) => {
   if (req.user) {
@@ -17,10 +20,10 @@ router.get('/', (req, res) => {
 });
 
 router.put('/', async (req, res) => {
-  database.models.user.findOne({
+  database.db.models.user.findOne({
     where: { id: req.user.id },
     include: [{
-      model: database.models.organization,
+      model: database.db.models.organization,
       attributes: ['id', 'name']
     }]
   })

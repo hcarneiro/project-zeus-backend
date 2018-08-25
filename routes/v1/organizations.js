@@ -1,5 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const authenticate = require('../../libs/authenticate');
+const preloaders = require('../../libs/preloaders');
+
+router.use(authenticate);
+router.param('id', preloaders.organization);
 
 router.get('/', function getOrganizations(req, res) {
   req.user.getOrganizations({
