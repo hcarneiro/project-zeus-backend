@@ -7,7 +7,7 @@ const keys = [
   'AWS.ACCESS_KEY_ID',
   'S3.BUCKET_NAME',
   'S3.BUCKET_REGION',
-  'redis.host'
+  'REDIS.URL'
 ];
 
 const config = {};
