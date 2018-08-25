@@ -114,14 +114,14 @@ module.exports.createSession = function (req, userId) {
     server: {
       passports: {}
     },
-    fingerprint: database.models.session.generateFingerprint(req)
+    fingerprint: database.db.models.session.generateFingerprint(req)
   };
 
   if (req.session) {
     data.server.previousSessionId = req.session.id;
   }
 
-  const session = database.models.session.build(data);
+  const session = database.db.models.session.build(data);
 
   session.setIdentifier(req);
 

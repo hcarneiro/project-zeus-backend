@@ -1,10 +1,13 @@
+const _ = require('lodash');
 const Sequelize = require('sequelize');
 const database = require('../libs/database');
 const crypt = require('crypt3');
 const md5 = require('md5');
 const casual = require('casual');
 
-const User = database.define('user', {
+const orgAdminRoleId = 1;
+
+const User = database.db.define('user', {
   email: {
     type: Sequelize.STRING,
     unique: true,
@@ -93,6 +96,15 @@ const User = database.define('user', {
     }
   }
 });
+
+User.prototype.is = function(groupName) {
+  const getRole = this.__userRole ? Promise.resolve(this.__userRole) : this.getUserRole();
+
+  return getRole.then((role) => {
+    this.__userRole = role;
+    return Promise.resolve(role && role.get('role').toLowerCase() === groupName.toLowerCase());
+  });
+};
 
 User.prototype.generateAuthToken = function() {
   // Generates something like "c763d6786d53e0e6fb772823e737b2d8-657-290-0938"

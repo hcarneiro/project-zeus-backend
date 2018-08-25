@@ -5,7 +5,7 @@ const casual = require('casual');
 const md5 = require('md5');
 const useragent = require('useragent');
 
-const Session = database.define('session', {
+const Session = database.db.define('session', {
   server: {
     type: Sequelize.JSONB,
     allowNull: true

@@ -54,10 +54,10 @@ Models.Session.belongsTo(Models.User, {
   onDelete: 'cascade'
 });
 
-database.sync();
+database.db.sync();
   // .then(function(){
   //   console.log('Syncronization complete. Creating organization roles...');
-  //   return database.models.organizationRole.bulkCreate([
+  //   return database.db.models.organizationRole.bulkCreate([
   //     {
   //       "id": 1,
   //       "role": "admin"
@@ -69,7 +69,7 @@ database.sync();
   //   ]);
   // }).then(function () {
   //   console.log('Organization roles created. Creating user roles...');
-  //   return database.models.userRole.bulkCreate([
+  //   return database.db.models.userRole.bulkCreate([
   //     {
   //       "id": 1,
   //       "role": "admin"
@@ -81,7 +81,7 @@ database.sync();
   //   ]);
   // }).then(function () {
   //   console.log('User roles created. Creating team roles...');
-  //   return database.models.teamRole.bulkCreate([
+  //   return database.db.models.teamRole.bulkCreate([
   //     {
   //       "id": 1,
   //       "role": "owner"

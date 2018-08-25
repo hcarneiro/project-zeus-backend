@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const database = require('../libs/database');
 
-const UserRole = database.define('userRole', {
+const UserRole = database.db.define('userRole', {
   role: {
     type: Sequelize.STRING,
     allowNull: false

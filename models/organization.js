@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const database = require('../libs/database');
 
-const Organization = database.define('organization', {
+const Organization = database.db.define('organization', {
   name: {
     type: Sequelize.STRING(100),
     allowNull: false
