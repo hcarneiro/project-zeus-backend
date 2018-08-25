@@ -2,7 +2,19 @@ const Sequelize = require('sequelize');
 const env = (process.env.NODE_ENV || 'local').toLowerCase();
 const envConfig = require(`../config/${env}.json`);
 const config = require('./config');
+const redis = require('redis');
+const bluebird = require('bluebird');
+
+bluebird.promisifyAll(redis.RedisClient.prototype);
+
 const DATABASE_URL = process.env.DATABASE_URL || envConfig.database_url;
+
+// Max time in seconds a redis lock can be held
+const MAX_LOCK_TIME = 120;
+
+const database = {};
+
+database.redis = redis.createClient(config.redis);
 
 const operationsColors = {
   INSERT: 32, // green
@@ -23,7 +35,7 @@ const dbLogging = !!config.query_logging ? function (query) {
   console.log(`\x1b[36m<Query>\x1b[0m \x1b[${color}m%s\x1b[0m`, query);
 } : false;
 
-const database = new Sequelize(DATABASE_URL, {
+database.db = new Sequelize(DATABASE_URL, {
   logging: dbLogging,
   dialect: 'postgres',
   dialectOptions: {
