@@ -151,3 +151,40 @@ function loadUser(req, res, next) {
 }
 
 module.exports.loadUser = loadUser;
+
+function belongsToGroup(user, groupName) {
+  return user.is(groupName);
+}
+
+function belongs(groupName, req, res, next) {
+  belongsToGroup(req.user, groupName).then(function (belongs) {
+    if (!belongs) {
+      return res.status(401).send({
+        error: 'admin access only',
+        message: 'You must be an admin to access this route.'
+      });
+    }
+
+    next();
+  });
+}
+
+module.exports.admin = function (req, res, next) {
+  authenticate(req, res, function () {
+    belongs('admin', req, res, function () {
+      req.admin = true;
+      next();
+    });
+  });
+};
+
+module.exports.organizationAdmin = function (req, res, next) {
+  authenticate(req, res, function () {
+    if (!req.pzOrganization.organizationUser || req.pzOrganization.organizationUser.organizationRoleId !== 1) {
+      // You can still access the route if you're a system admin
+      return module.exports.admin(req, res, next);
+    }
+
+    next();
+  });
+};
