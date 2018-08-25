@@ -14,7 +14,7 @@ const MAX_LOCK_TIME = 120;
 
 const database = {};
 
-database.redis = redis.createClient(config.redis);
+database.redis = redis.createClient(process.env.NODE_ENV ? process.env['REDIS_URL'] : config.redis);
 
 const operationsColors = {
   INSERT: 32, // green
