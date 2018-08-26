@@ -1,16 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const Project = require('../../models/project');
+const database = require('../../libs/database');
 const Task = require('../../models/task');
-const TaskUser = require('../../models/taskUser');
+const authenticate = require('../../libs/authenticate');
+
+router.use(authenticate);
 
 router.get('/', async (req, res) => {
   const projects = await req.user.getProjects({
     include: [{
-      model: Task,
-      where: {
-        userId: req.user.id
-      }
+      model: Task
     }],
     order: [
       ['createdAt', 'DESC']
@@ -28,7 +27,7 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
-  const project = await Project.findOne({
+  const project = await database.db.models.project.findOne({
     where: {
       id: req.params.id
     },
@@ -48,7 +47,7 @@ router.get('/:id', async (req, res) => {
 });
 
 router.get('/:id/tasks', (req, res) => {
-  return Project.findById(req.params.id)
+  return database.db.models.project.findById(req.params.id)
     .then((project) => {
       return project.getTask({
         order: [
