@@ -57,7 +57,8 @@ const User = database.db.define('user', {
     allowNull: true
   },
   userBio: {
-    type: Sequelize.TEXT
+    type: Sequelize.JSONB,
+    defaultValue: {}
   },
   userCity: {
     type: Sequelize.STRING
