@@ -1,11 +1,31 @@
 const express = require('express');
 const router = express.Router();
-const Task = require('../../models/task');
+const database = require('../../libs/database');
+const authenticate = require('../../libs/authenticate');
+
+router.use(authenticate);
 
 router.post('/', (req, res) => {
-  req.user.createTask(req.body)
+  debugger;
+  let taskResponse;
+  database.db.models.task.create(req.body)
     .then((task) => {
-      res.send(task);
+      taskResponse = task
+
+      if (!req.body.projectId) {
+        return task.addUser(req.user);
+      }
+
+      return database.db.models.project.findById(req.body.projectId)
+        .then((project) => {
+          return project.addTask(task);
+        })
+        .then(() => {
+          return task.addUser(req.user);
+        });
+    })
+    .then(() => {
+      res.send(taskResponse);
     })
     .catch((error) => {
       res.status(500).send(error)

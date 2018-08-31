@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const database = require('../../libs/database');
-const Task = require('../../models/task');
 const authenticate = require('../../libs/authenticate');
 
 router.use(authenticate);
@@ -9,7 +8,7 @@ router.use(authenticate);
 router.get('/', async (req, res) => {
   const projects = await req.user.getProjects({
     include: [{
-      model: Task
+      model: database.db.models.task
     }],
     order: [
       ['createdAt', 'DESC']
@@ -47,7 +46,7 @@ router.get('/:id', async (req, res) => {
 });
 
 router.get('/:id/tasks', (req, res) => {
-  return database.db.models.project.findById(req.params.id)
+  database.db.models.project.findById(req.params.id)
     .then((project) => {
       return project.getTask({
         order: [
@@ -64,6 +63,20 @@ router.get('/:id/tasks', (req, res) => {
         };
         res.status(404).send(notFound)
       }
+    });
+});
+
+router.post('/', (req, res) => {
+  let projectResponse;
+  database.db.models.project.create(req.body)
+    .then((project) => {
+      projectResponse = project
+      return project.addUser(req.user);
+    }).then(() => {
+      res.send(projectResponse);
+    })
+    .catch((error) => {
+      res.status(500).send(error)
     });
 });
 
