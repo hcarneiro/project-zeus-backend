@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const express = require('express');
 const router = express.Router();
 const authenticate = require('../../libs/authenticate');
@@ -15,7 +16,17 @@ router.get('/', function getOrganizations(req, res) {
         const plainOrg = organization.toJSON();
         return plainOrg;
       });
+
       res.send({ organizations });
+    });
+});
+
+router.get('/:id/users', function getOrgUsers(req, res) {
+  req.pzOrganization.getUsers({
+    attributes: ['id', 'firstName', 'lastName', 'email', 'userTitle', 'profilePicture']
+  })
+    .then(function onGetUsers(users) {
+      res.send({ users });
     });
 });
 
