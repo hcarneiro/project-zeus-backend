@@ -4,6 +4,8 @@ const database = require('./database');
 
 const authenticate = require('./authenticate');
 
+const userAdminRole = 1;
+
 // --------------------------------------------------------------------------
 
 module.exports = function (preloaderName, req, res, id) {
@@ -51,7 +53,7 @@ module.exports.organization = function preloaderOrganization(req, res, next, id)
     return next();
   }
 
-  if (req.admin) {
+  if (req.admin || (req.user && req.user.userRoleId)) {
     return database.db.models.organization.findById(id)
       .then(function (organization) {
         if (!organization) {
@@ -67,11 +69,7 @@ module.exports.organization = function preloaderOrganization(req, res, next, id)
     return res.status(400).send({ error: 'Authentication is required to access organizations' });
   }
 
-  let attributes = ['id', 'name', 'settings', 'type', 'legacyId', 'encryptionKey', 'policy'];
-
-  if (req.path.indexOf(`organizations/${id}/credentials`) !== -1) {
-    attributes = undefined; // load everything in the model
-  }
+  let attributes = ['id', 'name', 'settings', 'type'];
 
   req.user.getOrganizations({
     where: {
@@ -87,21 +85,10 @@ module.exports.organization = function preloaderOrganization(req, res, next, id)
       return Promise.reject();
     }
 
-    return req.user.getApps({
-      where: { organizationId: id },
-      attributes: ['organizationId'],
-      raw: true,
-      limit: 1
-    }).then(function (apps) {
-      if (!apps.length) {
-        return Promise.reject();
-      }
-
-      return database.db.models.organization.findOne({
-        where: { id }
-      }).then(function (organization) {
-        return organization ? Promise.resolve(organization) : Promise.reject();
-      });
+    return database.db.models.organization.findOne({
+      where: { id }
+    }).then(function (organization) {
+      return organization ? Promise.resolve(organization) : Promise.reject();
     });
   }).then(function onOrganizationLoaded(organization) {
     req.pzOrganization = organization;
