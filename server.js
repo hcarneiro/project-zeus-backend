@@ -1,5 +1,3 @@
-require ('newrelic');
-
 const http = require('http');
 const socketIO = require('socket.io');
 const config = require('./libs/config');

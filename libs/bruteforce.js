@@ -17,7 +17,7 @@ const failCallback = function (req, res, next, nextValidRequestDate) {
 
 // Middleware to slow down requests after 5 attempts from same IP
 const brute = new ExpressBrute(store, {
-  freeRetries: config.env === 'production' ? 5 :  2,
+  freeRetries: config.env === 'production' ? 5 : 10,
   minWait: 2*60*1000, // 2 minutes
   maxWait: 10*60*1000, // 10 minutes,
   failCallback: failCallback
